@@ -23,8 +23,7 @@ def opslog(client, channel, nick, message, cmd, args):
         else:
             return show(client, channel, 5)
     elif subcmd == 'search':
-        input = ' '.join(args[1:])
-        return search(input, nick)
+        return search(_)
     elif subcmd == 'deletelast':
         return deletelast(_)
     else:
@@ -60,6 +59,5 @@ def deletelast():
     pass
 
 def search():
-    query = {'logline': syllables}
     pass
 
