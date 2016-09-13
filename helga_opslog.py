@@ -13,15 +13,15 @@ MAX_CHANNEL_SHOW = 10
 def opslog(client, channel, nick, message, cmd, args):
 
     if not args:
-        return show(5)    
+        return show(client, channel, 5)    
     
     subcmd = args[0]
 
-    if subcmd == 'show' or not args:
-        if args[1].isdigit():
-            return show(args[1], nick)
+    if subcmd == 'show':
+        if len(args) >= 2 and args[1].isdigit():
+            return show(client, channel, int(args[1]), nick)
         else:
-            return show(5)
+            return show(client, channel, 5)
     elif subcmd == 'search':
         input = ' '.join(args[1:])
         return search(input, nick)
@@ -37,7 +37,7 @@ def opslog(client, channel, nick, message, cmd, args):
         })
             
     
-def show(entries, user=None):
+def show(client, channel, entries, user=None):
     """
 
 
@@ -45,9 +45,16 @@ def show(entries, user=None):
     records = []
     cur = db.opslog.find().sort('date', -1).limit(entries)
     for i in cur:
-        to_add = '%s %s: %s' % ("{:%m/%d/%y %-I:%M:%S}".format(i['date']), i['user'], i['logline'])
+        to_add = "{0:%m/%d/%y %-I:%M:%S%p} {1}: {2}".format(i['date'], i['user'], i['logline'])
         records.append(to_add)
-    return records
+    if entries > MAX_CHANNEL_SHOW:
+        if channel != user:
+            client.me(channel, 'whispers to {0}'.format(user))
+            client.msg(user, u'\n'.join(records))
+        else:
+            return records
+    else:
+        return records
 
 def deletelast():
     pass
