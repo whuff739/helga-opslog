@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+
 from helga.plugins import command
 from helga.db import db
 from helga import log, settings
@@ -26,10 +28,10 @@ def opslog(client, channel, nick, message, cmd, args):
     elif subcmd == 'deletelast':
         return deletelast(_)
     else:
-        logger.info('Adding an opslog entry by user "%s"', nick)
-        input = ' '.join(args[1:])
+        logger.info('Adding an opslog entry by user %s', nick)
+        input = ' '.join(args)
         db.opslog.insert({
-            'date': datetime.datetime.utcnow(),
+            'date': dt.utcnow(),
             'logline': input,
             'user': nick,
         })
@@ -40,15 +42,17 @@ def show(entries, user=None):
 
 
     """
-    if entries > MAX_CHANNEL_SHOW:
-        whisper
-    else:
-        inchannel
-    
+    records = []
+    cur = db.opslog.find().sort('date', -1).limit(entries)
+    for i in cur:
+        to_add = '%s %s: %s' % ("{:%m/%d/%y %-I:%M:%S}".format(i['date']), i['user'], i['logline'])
+        records.append(to_add)
+    return records
 
 def deletelast():
     pass
 
 def search():
+    query = {'logline': syllables}
     pass
 

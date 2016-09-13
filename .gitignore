@@ -33,3 +33,9 @@ nosetests.xml
 # Local settings
 my_settings.py
 .vagrant
+
+# swap
+.*.swp
+
+# irssi
+.irssi
