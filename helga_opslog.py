@@ -73,7 +73,14 @@ def search(client, channel, s_strings, user):
                 j['user'],
                 j['logline'])
             records.append(to_add)
-    return records
+    if len(records) > MAX_RESULT_LEN:
+        if channel != user:
+            client.me(channel, 'whispers to {0}'.format(user))
+            client.msg(user, u'\n'.join(records))
+        else:
+            return records
+    else:
+        return records
 
 def tz_convert(utc_dt):
     return utc_dt - timedelta(hours=4)
