@@ -12,7 +12,8 @@ logger = log.getLogger(__name__)
 RESULT_LEN = 5
 MAX_RESULT_LEN = 10
 
-@command('opslog', help='Usage: helga opslog [show <count>|deletelast|search <string>] <entry>')
+
+@command('opslog', shlex=True, help='Usage: helga opslog [show <count>|deletelast|search <string>] <entry>')
 def opslog(client, channel, nick, message, cmd, args):
 
     if not args:
@@ -57,10 +58,12 @@ def show(client, channel, entry_count, user=None):
     else:
         return records
 
+
 def deletelast(user):
     logger.info('Deleting opslog entry by user %s', user)
     cur = db.opslog.find_one_and_delete({'user': user}, sort=[('date', -1)])
     return random_ack()
+
 
 def search(client, channel, s_strings, user):
     records = []
@@ -81,6 +84,7 @@ def search(client, channel, s_strings, user):
             return records
     else:
         return records
+
 
 def tz_convert(utc_dt):
     return utc_dt - timedelta(hours=4)
