@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import re
 from datetime import datetime as dt
 from datetime import timedelta
 
-from helga.plugins import command, random_ack
+from helga.plugins import command, preprocessor, random_ack
 from helga.db import db
 from helga import log, settings
 
@@ -67,23 +69,27 @@ def deletelast(user):
 
 def search(client, channel, s_strings, user):
     records = []
+    record_strings = []
     for i in s_strings:
         regex = re.compile(i, re.IGNORECASE)
         cur = db.opslog.find({'logline': regex}).sort('date', -1)
         for j in cur:
-            to_add = '{0:%a %d/%m %H:%M} {1}: {2}'.format(
-                tz_convert(j['date']),
-                j['user'],
-                j['logline'])
-            records.append(to_add)
-    if len(records) > MAX_RESULT_LEN:
+            if j not in records:
+                records.append(j)
+    for i in records:
+        to_add = '{0:%a %d/%m %H:%M} {1}: {2}'.format(
+                tz_convert(i['date']),
+                i['user'],
+                i['logline'])
+        record_strings.append(to_add)
+    if len(record_strings) > MAX_RESULT_LEN:
         if channel != user:
             client.me(channel, 'whispers to {0}'.format(user))
             client.msg(user, u'\n'.join(records))
         else:
-            return records
+            return record_strings
     else:
-        return records
+        return record_strings
 
 
 def tz_convert(utc_dt):
