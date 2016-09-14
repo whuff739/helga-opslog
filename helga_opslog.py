@@ -5,7 +5,6 @@ from helga.plugins import command
 from helga.db import db
 from helga import log, settings
 
-from bson.codec_options import CodecOptions
 
 logger = log.getLogger(__name__)
 
