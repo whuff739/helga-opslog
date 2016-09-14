@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 from datetime import timedelta
 
-from helga.plugins import command
+from helga.plugins import command, random_ack
 from helga.db import db
 from helga import log, settings
 
@@ -57,10 +57,9 @@ def show(client, channel, entry_count, user=None):
         return records
 
 def deletelast(user):
-    #to_delete = db.opslog.find({'user': user}).sort('date', -1).limit(1)
-    #logger.info(to_delete._id)
-    deleted = db.opslog.delete_one({'_id': to_delete.get('_id')}).sort('date', -1)
     logger.info('Deleting opslog entry by user %s', user)
+    cur = db.opslog.find_one_and_delete({'user': user}, sort=[('date', -1)])
+    return random_ack()
 
 def search():
     pass
