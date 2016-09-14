@@ -65,13 +65,14 @@ def deletelast(user):
 def search(client, channel, s_strings, user):
     records = []
     for i in s_strings:
-        regex = re.compile(i, re.IGNORECASE)
+        print i
+        regex = re.compile('^est', re.IGNORECASE)
         cur = db.opslog.find({'logline': regex}).sort('date', -1)
         for j in cur:
             to_add = '{0:%a %d/%m %H:%M} {1}: {2}'.format(
-                tz_convert(j['date']),
-                j['user'],
-                j['logline'])
+                tz_convert(i['date']),
+                i['user'],
+                i['logline'])
             records.append(to_add)
     return records
 
