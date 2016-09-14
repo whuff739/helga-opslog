@@ -1,6 +1,5 @@
 from datetime import datetime as dt
 from datetime import timedelta
-import calendar
 
 from helga.plugins import command
 from helga.db import db
