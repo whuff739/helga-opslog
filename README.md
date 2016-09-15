@@ -17,7 +17,7 @@ After installing the helga-opslog the helga process requires a restart.
 
 Adding an entry:  
 
-`!opslog <foo>`
+`!opslog foo`
 
 Deleting an entry:  
 
@@ -41,7 +41,7 @@ combining channel and specific words:
 Show:
 
 show last 5 entries:  
-`!opslog`
+`!opslog` or `!opslog show`
 
 show x number of entries:  
 `!opslog show x`
