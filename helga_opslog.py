@@ -49,10 +49,9 @@ def show(client, channel, entry_count, user=None):
     records = []
     cur = db.opslog.find().sort('date', -1).limit(entry_count)
     for i in cur:
-        to_add = '{0:%a %d/%m %H:%M} {1} in {2}: {3}'.format(
+        to_add = '{0:%a %d/%m %H:%M} {1}: {2}'.format(
                 tz_convert(i['date']),
                 i['user'],
-                i['chan'],
                 i['logline'])
         records.append(to_add)
     if entry_count > MAX_RESULT_LEN:
