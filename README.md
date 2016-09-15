@@ -15,16 +15,18 @@ After installing the helga-opslog the helga process requires a restart.
 
 ### Usage
 
-Adding an entry:  
-
+adding an entry:  
 `!opslog foo`
 
-Deleting an entry:  
+show last 5 entries:  
+`!opslog` or `!opslog show`
 
-A user can only delete entries they created. Only the most previous entry can be deleted.  
-`!opslog deletelast`
+show x number of entries:  
+`!opslog show x`
 
-Searching:
+deleting an entry:  
+(A user can only delete the most recent entry they created.)  
+`!opslog deletelast`  
 
 searching all entries:  
 `!opslog search foo`
@@ -37,11 +39,3 @@ searching for specific words together:
 
 combining channel and specific words:  
 `!opslog search #channel 'foo bar'`
-
-Show:
-
-show last 5 entries:  
-`!opslog` or `!opslog show`
-
-show x number of entries:  
-`!opslog show x`
