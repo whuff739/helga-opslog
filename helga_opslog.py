@@ -17,8 +17,8 @@ MAX_RESULT_LEN = 10
 def opslog(client, channel, nick, message, cmd, args):
 
     if not args:
-        return show(client, channel, RESULT_LEN)    
-    
+        return show(client, channel, RESULT_LEN)
+
     subcmd = args[0]
 
     if subcmd == 'show':
@@ -27,7 +27,11 @@ def opslog(client, channel, nick, message, cmd, args):
         else:
             return show(client, channel, RESULT_LEN)
     elif subcmd == 'search':
-        return search(client, channel, args[1:], nick)
+        if args[1][0] == '#':
+            chan = args[1]
+            return search(client, channel, args[2:], nick, chan)
+        else:
+            return search(client, channel, args[1:], nick)
     elif subcmd == 'deletelast':
         return deletelast(nick)
     else:
@@ -35,18 +39,20 @@ def opslog(client, channel, nick, message, cmd, args):
         input = ' '.join(args)
         db.opslog.insert({
             'date': dt.utcnow(),
+            'chan': channel,
             'logline': input,
             'user': nick,
         })
-            
-    
+
+
 def show(client, channel, entry_count, user=None):
     records = []
     cur = db.opslog.find().sort('date', -1).limit(entry_count)
     for i in cur:
-        to_add = '{0:%a %d/%m %H:%M} {1}: {2}'.format(
+        to_add = '{0:%a %d/%m %H:%M} {1} in {2}: {3}'.format(
                 tz_convert(i['date']),
                 i['user'],
+                i['chan'],
                 i['logline'])
         records.append(to_add)
     if entry_count > MAX_RESULT_LEN:
@@ -65,12 +71,15 @@ def deletelast(user):
     return random_ack()
 
 
-def search(client, channel, s_strings, user):
+def search(client, channel, s_strings, user, chan=None):
     records = []
     record_strings = []
     for i in s_strings:
         regex = re.compile(i, re.IGNORECASE)
-        cur = db.opslog.find({'logline': regex}).sort('date', -1)
+        if not chan:
+            cur = db.opslog.find({'logline': regex}).sort('date', -1)
+        else:
+            cur = db.opslog.find({'logline': regex, 'chan': chan}).sort('date', -1)
         for j in cur:
             if j not in records:
                 records.append(j)
