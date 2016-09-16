@@ -9,23 +9,20 @@ from helga import log, settings
 
 logger = log.getLogger(__name__)
 
-RESULT_LEN = 5
+SHOW_LEN = 5
 MAX_RESULT_LEN = 10
 
 
 @command('opslog', shlex=True, help='Usage: helga opslog [show <count>|deletelast|search <string>] <entry>')
 def opslog(client, channel, nick, message, cmd, args):
-
     if not args:
-        return show(client, channel, RESULT_LEN)
-
+        return show(client, channel, SHOW_LEN)
     subcmd = args[0]
-
     if subcmd == 'show':
         if len(args) >= 2 and args[1].isdigit():
             return show(client, channel, int(args[1]), nick)
         else:
-            return show(client, channel, RESULT_LEN)
+            return show(client, channel, SHOW_LEN)
     elif subcmd == 'search':
         if args[1][0] == '#':
             chan = args[1]
