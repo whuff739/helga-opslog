@@ -88,7 +88,7 @@ def write_out(records, client, channel, user):
     if len(record_strings) > MAX_RESULT_LEN:
         if channel != user:
             client.me(channel, 'whispers to {0}'.format(user))
-            client.msg(user, u'\n'.join(records))
+            client.msg(user, u'\n'.join(record_strings))
         else:
             return record_strings
     else:
