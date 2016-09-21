@@ -18,24 +18,36 @@ After installing the helga-opslog the helga process requires a restart.
 adding an entry:  
 `!opslog foo`
 
-show last 5 entries:  
-`!opslog` or `!opslog show`
+~ show ~
 
-show x number of entries:  
+show last 5 global entries:    
+`!opslog showall`
+
+show x number of global entries:  
+`!opslog showall x`
+
+show last 5 entries in current channel:  
+`!opslog show` or `!opslog`
+
+show x number of entries in current channel:  
 `!opslog show x`
+
+~ delete ~
 
 deleting an entry:  
 (A user can only delete the most recent entry they created.)  
 `!opslog deletelast`  
 
-searching all entries:  
+~ search ~
+
+searching entries in current channel:  
 `!opslog search foo`
 
-searching by channel:  
+searching in different channel:  
 `!opslog search #channel foo`
 
-searching for specific words together:  
+searching for specific phrase in current channel:  
 `!opslog search 'foo bar'`
 
-combining channel and specific words:  
+searching for specific phrase in a different channel:    
 `!opslog search #channel 'foo bar'`
