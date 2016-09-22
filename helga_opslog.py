@@ -13,7 +13,8 @@ SHOW_LEN = 5
 MAX_RESULT_LEN = 10
 
 
-@command('opslog', shlex=True, help='Usage: helga opslog [show <count>|deletelast|search <string>] <entry>')
+@command('opslog', shlex=True, help='Usage: !opslog [ show [x] | showall ' + \
+        u'[x] | search [#chan] <entry> | deletelast | <entry> ]')
 def opslog(client, channel, nick, message, cmd, args):
     if not args:
         return show(client, channel, SHOW_LEN, nick)
@@ -36,6 +37,9 @@ def opslog(client, channel, nick, message, cmd, args):
             return search(client, channel, args[1:], nick, channel)
     elif subcmd == 'deletelast':
         return deletelast(nick)
+    elif subcmd == 'help':
+        return u'Usage: !opslog [ show [x] | showall [x] | search [#chan] ' + \
+                u'<entry> | deletelast | <entry> ]'
     else:
         logger.info('Adding an opslog entry by user %s', nick)
         input = ' '.join(args)
@@ -70,7 +74,8 @@ def search(client, channel, s_strings, user, chan):
         if not chan:
             cur = db.opslog.find({'logline': regex}).sort('date', -1)
         else:
-            cur = db.opslog.find({'logline': regex, 'chan': chan}).sort('date', -1)
+            cur = db.opslog.find({'logline': regex, \
+                    'chan': chan}).sort('date', -1)
         for j in cur:
             if j not in records:
                 records.append(j)
@@ -80,7 +85,7 @@ def search(client, channel, s_strings, user, chan):
 def write_out(records, client, channel, user):
     record_strings = []
     for i in records:
-        to_add = '{0:%a %d/%m %H:%M} {1}: {2}'.format(
+        to_add = '`{0:%a %d/%m %H:%M}` {1}: {2}'.format(
                 tz_convert(i['date']),
                 i['user'],
                 i['logline'])
