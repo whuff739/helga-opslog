@@ -14,7 +14,8 @@ MAX_RESULT_LEN = 10
 
 
 @command('opslog', shlex=True, help='Usage: !opslog [ show [x] | showall ' + \
-        u'[x] | search [#chan] <entry> | deletelast | <entry> ]')
+        u'[x] | search [#chan] <entry> | searchall <entry> | ' + \
+        u'deletelast | <entry> ]')
 def opslog(client, channel, nick, message, cmd, args):
     if not args:
         return show(client, channel, SHOW_LEN, nick)
@@ -35,11 +36,13 @@ def opslog(client, channel, nick, message, cmd, args):
             return search(client, channel, args[2:], nick, chan)
         else:
             return search(client, channel, args[1:], nick, channel)
+    elif subcmd == 'searchall':
+        return search(client, channel, args[1:], nick)
     elif subcmd == 'deletelast':
         return deletelast(nick)
     elif subcmd == 'help':
         return u'Usage: !opslog [ show [x] | showall [x] | search [#chan] ' + \
-                u'<entry> | deletelast | <entry> ]'
+                u'<entry> | searchall <entry> | deletelast | <entry> ]'
     else:
         logger.info('Adding an opslog entry by user %s', nick)
         input = ' '.join(args)
@@ -67,7 +70,7 @@ def deletelast(user):
     return random_ack()
 
 
-def search(client, channel, s_strings, user, chan):
+def search(client, channel, s_strings, user, chan=None):
     records = []
     for i in s_strings:
         regex = re.compile(i, re.IGNORECASE)
@@ -85,20 +88,26 @@ def search(client, channel, s_strings, user, chan):
 def write_out(records, client, channel, user):
     record_strings = []
     for i in records:
-        to_add = '`{0:%a %d/%m %H:%M}` {1}: {2}'.format(
-                tz_convert(i['date']),
-                i['user'],
-                i['logline'])
+        to_add = '`{0:%a %d/%m %H:%M}` `{1}` `{2}`: {3}'.format(
+            tz_convert(i['date']),
+            i['chan'],
+            i['user'],
+            i['logline'])
         record_strings.append(to_add)
     if len(record_strings) > MAX_RESULT_LEN:
         if channel != user:
             client.me(channel, 'whispers to {0}'.format(user))
             client.msg(user, u'\n'.join(record_strings))
         else:
-            return record_strings
+            return no_results(record_strings)
     else:
-        return record_strings
+        return no_results(record_strings)
 
+
+def no_results(res):
+    if len(res) == 0:
+        res.append("no results :disappointed:")
+    return res
 
 def tz_convert(utc_dt):
     return utc_dt - timedelta(hours=4)

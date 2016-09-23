@@ -46,6 +46,9 @@ searching entries in current channel:
 searching in different channel:  
 `!opslog search #channel foo`
 
+search all entries:  
+`!opslog searchall foo`
+
 searching for specific phrase in current channel:  
 `!opslog search 'foo bar'`
 
