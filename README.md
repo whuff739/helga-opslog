@@ -6,7 +6,7 @@ A helga plugin to record & query opslog entries.
 
 ```
 source bin/activate
-git clone https://github.atl.pdrop.net/whuff/helga-opslog.git
+git clone https://github.com/whuff739/helga-opslog.git
 cd src/helga-opslog
 python setup.py develop
 ```
