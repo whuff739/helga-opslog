@@ -90,9 +90,9 @@ def write_out(records, client, channel, user):
     for i in records:
         to_add = '`{0:%a %d/%m %H:%M}` `{1}` `{2}`: {3}'.format(
             tz_convert(i['date']),
-            unicode(i['chan'], 'utf-8'),
-            unicode(i['user'], 'utf-8'),
-            unicode(i['logline'], 'utf-8'))
+            i['chan'],
+            i['user'],
+            i['logline'].encode("utf-8"))
         record_strings.append(to_add)
     if len(record_strings) > MAX_RESULT_LEN:
         if channel != user:
