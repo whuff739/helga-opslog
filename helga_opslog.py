@@ -89,7 +89,7 @@ def write_out(records, client, channel, user):
     record_strings = []
     for i in records:
         to_add = '`{0:%Y-%m-%d %H:%M}` `{1}` `{2}`: {3}'.format(
-            tz_convert(i['date']).encode("utf-8"),
+            tz_convert(i['date']),
             i['chan'].encode("utf-8"),
             i['user'].encode("utf-8"),
             i['logline'].encode("utf-8"))
