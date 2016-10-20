@@ -88,10 +88,10 @@ def search(client, channel, s_strings, user, chan=None):
 def write_out(records, client, channel, user):
     record_strings = []
     for i in records:
-        to_add = '`{0:%a %d/%m %H:%M}` `{1}` `{2}`: {3}'.format(
+        to_add = '`{0:%Y-%m-%d %H:%M}` `{1}` `{2}`: {3}'.format(
             tz_convert(i['date']),
-            i['chan'],
-            i['user'],
+            i['chan'].encode("utf-8"),
+            i['user'].encode("utf-8"),
             i['logline'].encode("utf-8"))
         record_strings.append(to_add)
     if len(record_strings) > MAX_RESULT_LEN:
